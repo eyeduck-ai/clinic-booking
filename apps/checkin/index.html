@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>診所報到</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="../shared/ui-theme.js"></script>
+  <link href="../shared/ui-components.css" rel="stylesheet" />
+</head>
+<body class="ui-page bg-background-light text-ink" data-api-base="/api/v1">
+  <main class="max-w-lg mx-auto p-6">
+    <div class="ui-card space-y-4">
+      <div class="flex items-center gap-2 text-primary-dark">
+        <span class="material-symbols-outlined text-primary">qr_code_2</span>
+        <h1 class="text-xl font-bold">報到 Check-in</h1>
+      </div>
+      <p class="text-sm text-muted">掃描 QR 或貼上報到碼，完成到診登記。</p>
+      <form id="checkin-form" class="space-y-3">
+        <label class="flex flex-col gap-2 text-sm text-muted">
+          報到碼 / Token
+          <input id="checkin-token" type="text" placeholder="輸入報到碼" autocomplete="off" />
+        </label>
+        <button id="checkin-submit" type="submit"
+                class="w-full h-11 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-semibold">
+          確認報到
+        </button>
+      </form>
+      <div id="checkin-message" class="text-sm"></div>
+      <div id="checkin-detail" class="text-xs text-muted break-all"></div>
+    </div>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>

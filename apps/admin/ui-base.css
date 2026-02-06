@@ -1,0 +1,32 @@
+:root {
+  --primary: #2e6f6a;
+}
+
+body {
+  letter-spacing: 0.01em;
+}
+
+#provider-summary {
+  font-weight: 600;
+}
+
+#rule-list > div,
+#exception-list > div {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: #f5f1ea;
+  border: 1px solid #e2ded7;
+}
+
+.label,
+#rule-list .label,
+#exception-list .label {
+  color: #1b2421;
+  font-weight: 600;
+}
+
+#rule-message,
+#exception-message,
+#generate-message {
+  min-height: 1.25rem;
+}

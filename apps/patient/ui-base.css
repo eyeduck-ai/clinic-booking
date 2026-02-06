@@ -1,0 +1,65 @@
+:root {
+  --slot-available-bg: #dff1ee;
+  --slot-available-border: #2e6f6a;
+  --slot-available-text: #1d4744;
+  --slot-booked-bg: #e5e7eb;
+  --slot-booked-text: #9ca3af;
+  --slot-selected-bg: #2e6f6a;
+  --slot-selected-text: #ffffff;
+}
+
+.slot-btn {
+  border-radius: 0.75rem;
+  border: 2px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.slot-btn-available {
+  background: var(--slot-available-bg);
+  border-color: #bfe7c5;
+  border-color: color-mix(in srgb, var(--slot-available-border) 50%, transparent);
+  color: var(--slot-available-text);
+}
+
+.slot-btn-available:hover {
+  border-color: var(--slot-available-border);
+  transform: translateY(-1px);
+}
+
+.slot-btn-available.is-selected {
+  background: var(--slot-selected-bg);
+  border-color: var(--slot-selected-bg);
+  color: var(--slot-selected-text);
+  box-shadow: 0 8px 18px rgba(46, 111, 106, 0.25);
+}
+
+.slot-btn-booked {
+  background: var(--slot-booked-bg);
+  border-color: var(--slot-booked-bg);
+  color: var(--slot-booked-text);
+  cursor: not-allowed;
+}
+
+.date-pill.is-selected {
+  background: var(--slot-selected-bg);
+  color: #ffffff;
+  border-color: var(--slot-selected-bg);
+  box-shadow: 0 10px 22px rgba(46, 111, 106, 0.25);
+}
+
+#calendar-grid button.calendar-active {
+  background: rgba(46, 111, 106, 0.18);
+  color: var(--slot-available-text);
+  font-weight: 700;
+}
+
+#booking-modal .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+#booking-modal input:focus {
+  box-shadow: 0 0 0 3px rgba(46, 111, 106, 0.2);
+}

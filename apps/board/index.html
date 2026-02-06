@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>叫號看板｜即時看診進度</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200..700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="../shared/ui-theme.js"></script>
+  <link href="../shared/ui-components.css" rel="stylesheet" />
+  <link href="ui-base.css" rel="stylesheet" />
+</head>
+
+<body data-api-base="/api/v1" data-mock="true" class="min-h-screen bg-background-light text-ink font-body">
+  <div class="board-shell min-h-screen">
+    <header class="px-6 lg:px-10 py-6">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-4xl">live_tv</span>
+          <div>
+            <p class="text-xs text-muted uppercase tracking-[0.3em]">Queue Board</p>
+            <h1 class="text-2xl font-black text-primary-dark">即時叫號看板</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 text-sm text-muted">
+          <span class="material-symbols-outlined text-primary">pulse_alert</span>
+          <span>每 8 秒自動更新</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 lg:px-10 pb-12 space-y-8">
+      <section class="bg-surface rounded-2xl border border-[#e5e7eb] shadow-sm p-5 md:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-semibold">院所</span>
+            <select id="clinic-select" class="h-11 rounded-lg border border-[#dbe0e6] px-3 text-sm">
+              <option value="">載入中...</option>
+            </select>
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-semibold">醫師</span>
+            <select id="provider-select" class="h-11 rounded-lg border border-[#dbe0e6] px-3 text-sm">
+              <option value="">請先選擇院所</option>
+            </select>
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-semibold">日期</span>
+            <input id="board-date" type="date" class="h-11 rounded-lg border border-[#dbe0e6] px-3 text-sm" />
+          </label>
+          <button id="board-refresh"
+            class="h-11 px-5 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold">
+            立即刷新
+          </button>
+        </div>
+        <p id="board-summary" class="text-xs text-muted mt-3">請選擇院所與醫師</p>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="board-card">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <p class="text-xs text-muted uppercase tracking-[0.3em]">Now Serving</p>
+                <h2 class="text-lg font-bold">目前看診號</h2>
+              </div>
+              <span class="material-symbols-outlined text-primary text-3xl">stethoscope</span>
+            </div>
+            <div id="current-number" class="queue-number">--</div>
+            <p class="text-xs text-muted mt-4">請依現場叫號為準</p>
+          </div>
+
+          <div class="board-card board-card-accent">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <p class="text-xs text-muted uppercase tracking-[0.3em]">Next Up</p>
+                <h2 class="text-lg font-bold">下一位</h2>
+              </div>
+              <span class="material-symbols-outlined text-primary text-3xl">queue</span>
+            </div>
+            <div id="next-number" class="queue-number">--</div>
+            <p class="text-xs text-muted mt-4">請準備前往候診區</p>
+          </div>
+        </div>
+
+        <div class="bg-surface rounded-2xl border border-[#e5e7eb] shadow-sm p-6 flex flex-col">
+          <div class="flex items-center gap-2 mb-4 text-primary-dark">
+            <span class="material-symbols-outlined text-primary">bookmark</span>
+            <h3 class="text-lg font-bold">保留號碼</h3>
+          </div>
+          <div id="reserved-list" class="flex flex-wrap gap-2 min-h-[72px]">
+            <span class="reserved-pill">--</span>
+          </div>
+          <div class="mt-auto pt-6">
+            <p class="text-xs text-muted">保留號碼將在叫號時跳過</p>
+            <p id="updated-at" class="text-xs text-muted mt-2">更新時間：--</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

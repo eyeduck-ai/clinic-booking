@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>診所掛號系統｜可預約門診時段</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@400;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="../shared/ui-theme.js"></script>
+    <link href="../shared/ui-components.css" rel="stylesheet" />
+    <link href="ui-base.css" rel="stylesheet" />
+</head>
+
+<body data-selected-date="2023-10-23" data-selected-date-label="2023-10-23 (週一)" data-api-base="/api/v1"
+    data-mock="true" data-turnstile-site-key=""
+    class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen flex flex-col font-body">
+    <div class="bg-white dark:bg-[#1c2632] border-b border-[#f0f2f4] dark:border-[#2a3441] sticky top-0 z-50 shadow-sm">
+        <header
+            class="flex items-center justify-between whitespace-nowrap px-6 lg:px-10 py-3 max-w-[1440px] mx-auto w-full">
+            <div class="flex items-center gap-3 text-[#111418] dark:text-white">
+                <div class="text-primary flex items-center">
+                    <span class="material-symbols-outlined text-4xl">visibility</span>
+                </div>
+                <h2 class="text-xl font-bold leading-tight tracking-[-0.015em] text-primary-dark">諾貝爾眼科</h2>
+            </div>
+            <div class="flex flex-1 justify-end gap-8">
+                <div class="hidden md:flex items-center gap-9">
+                    <a class="text-[#444] dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                        href="#">關於我們</a>
+                    <a class="text-[#444] dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                        href="#">服務項目</a>
+                    <a class="text-[#444] dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                        href="#">醫師團隊</a>
+                    <a class="text-[#444] dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                        href="#">分院資訊</a>
+                </div>
+                <button
+                    class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary hover:bg-primary-hover transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-md shadow-primary/20">
+                    <span class="truncate">立即掛號</span>
+                </button>
+                <button class="md:hidden text-[#111418] dark:text-white">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="flex flex-col flex-1 max-w-[1440px] w-full mx-auto px-4 lg:px-10 py-6 lg:py-8 gap-8">
+        <!-- 麵包屑 -->
+        <div class="flex flex-wrap gap-2 text-sm">
+            <a class="text-[#617589] dark:text-[#9ca3af] font-medium hover:text-primary hover:underline" href="#">首頁</a>
+            <span class="text-[#617589] dark:text-[#9ca3af] font-medium">/</span>
+            <a class="text-[#617589] dark:text-[#9ca3af] font-medium hover:text-primary hover:underline"
+                href="#">門診服務</a>
+            <span class="text-[#617589] dark:text-[#9ca3af] font-medium">/</span>
+            <span class="text-primary-dark font-medium">線上掛號 (版面設計B)</span>
+        </div>
+
+        <!-- 主要內容區 - 左右分欄 -->
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- 左側側邊欄 - 選擇院所和日期 -->
+            <aside class="w-full lg:w-80 flex-shrink-0 flex flex-col gap-6">
+                <div>
+                    <h1
+                        class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em] mb-2">
+                        可預約門診時段</h1>
+                    <p class="text-[#617589] dark:text-[#9ca3af] text-base font-normal">請選擇院所與時間，直接點選時段預約。</p>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1c2632] rounded-xl p-5 shadow-sm border border-[#e5e7eb] dark:border-[#2a3441]">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-primary-dark">
+                        <span class="material-symbols-outlined text-primary">location_on</span>
+                        選擇院所 (地點)
+                    </h3>
+                    <div class="flex flex-col gap-5">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-[#111418] dark:text-white">就診地點</label>
+                            <div class="relative">
+                                <select id="clinic-select" name="clinic"
+                                    class="w-full h-10 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] text-[#111418] dark:text-white px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none outline-none">
+                                    <option selected="" value="tp-main">台北敦南院區 (總院)</option>
+                                    <option value="tp-station">台北站前院區</option>
+                                    <option value="tc-gongyi">台中公益院區</option>
+                                    <option value="ks-boai">高雄博愛院區</option>
+                                </select>
+                                <div
+                                    class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-[#617589]">
+                                    <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="h-px bg-[#f0f2f4] dark:bg-[#2a3441]"></div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-[#111418] dark:text-white">醫師專長</label>
+                            <div class="relative">
+                                <select id="specialty-select" name="specialty"
+                                    class="w-full h-10 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] text-[#111418] dark:text-white px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none outline-none">
+                                    <option value="all">所有專科</option>
+                                    <option selected="" value="retina">視網膜專家門診</option>
+                                    <option value="glaucoma">青光眼專家門診</option>
+                                    <option value="pediatric">小兒眼科專家門診</option>
+                                    <option value="neuro">神經眼科專家門診</option>
+                                </select>
+                                <div
+                                    class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-[#617589]">
+                                    <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-[#111418] dark:text-white">搜尋醫師</label>
+                            <div
+                                class="flex w-full items-stretch rounded-lg h-10 bg-[#f0f2f4] dark:bg-[#2a3441] overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 transition-shadow">
+                                <div class="text-[#617589] flex items-center justify-center pl-3">
+                                    <span class="material-symbols-outlined text-[20px]">search</span>
+                                </div>
+                                <input id="doctor-search"
+                                    class="flex w-full bg-transparent border-none text-sm px-3 text-[#111418] dark:text-white placeholder:text-[#617589] focus:outline-none focus:ring-0"
+                                    placeholder="輸入醫師姓名" />
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-[#111418] dark:text-white">選擇日期</label>
+                            <div data-calendar data-year="2023" data-month="10"
+                                class="rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] p-3">
+                                <div class="flex justify-between items-center mb-4">
+                                    <button
+                                        class="p-1 hover:bg-[#f0f2f4] dark:hover:bg-[#2a3441] rounded-full text-[#617589]">
+                                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                                    </button>
+                                    <span id="calendar-month-label" class="text-sm font-bold text-primary-dark">2023年 10月</span>
+                                    <button
+                                        class="p-1 hover:bg-[#f0f2f4] dark:hover:bg-[#2a3441] rounded-full text-[#617589]">
+                                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2 text-[#617589] font-medium">
+                                    <div>日</div>
+                                    <div>一</div>
+                                    <div>二</div>
+                                    <div>三</div>
+                                    <div>四</div>
+                                    <div>五</div>
+                                    <div>六</div>
+                                </div>
+                                <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">1</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">2</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">3</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">4</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">5</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">6</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">7</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">8</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">9</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">10</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">11</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">12</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">13</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">14</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">15</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">16</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">17</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">18</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">19</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">20</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">21</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#9ca3af] hover:bg-green-50 dark:hover:bg-[#2a3441]">22</button>
+                                    <button class="size-8 rounded-full calendar-active">23</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">24</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">25</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">26</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">27</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">28</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">29</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">30</button>
+                                    <button
+                                        class="size-8 rounded-full text-[#111418] dark:text-white hover:bg-green-50 dark:hover:bg-[#2a3441]">31</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右側主內容區 -->
+            <main class="flex-1 flex flex-col gap-6">
+                <!-- 快速日期選擇器 -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+                    <button data-role="quick-date" data-date="2023-10-23" data-weekday="週一"
+                        class="date-pill is-selected flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-primary text-white shadow-lg shadow-primary/25 shrink-0 transition-transform hover:scale-105 border-0">
+                        <span class="text-xs font-medium opacity-90">週一</span>
+                        <span class="text-xl font-bold">23</span>
+                    </button>
+                    <button data-role="quick-date" data-date="2023-10-24" data-weekday="週二"
+                        class="date-pill flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] text-[#617589] hover:border-primary hover:text-primary shrink-0 transition-colors">
+                        <span class="text-xs font-medium">週二</span>
+                        <span class="text-xl font-bold">24</span>
+                    </button>
+                    <button data-role="quick-date" data-date="2023-10-25" data-weekday="週三"
+                        class="date-pill flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] text-[#617589] hover:border-primary hover:text-primary shrink-0 transition-colors">
+                        <span class="text-xs font-medium">週三</span>
+                        <span class="text-xl font-bold">25</span>
+                    </button>
+                    <button data-role="quick-date" data-date="2023-10-26" data-weekday="週四"
+                        class="date-pill flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] text-[#617589] hover:border-primary hover:text-primary shrink-0 transition-colors">
+                        <span class="text-xs font-medium">週四</span>
+                        <span class="text-xl font-bold">26</span>
+                    </button>
+                    <button data-role="quick-date" data-date="2023-10-27" data-weekday="週五"
+                        class="date-pill flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] text-[#617589] hover:border-primary hover:text-primary shrink-0 transition-colors">
+                        <span class="text-xs font-medium">週五</span>
+                        <span class="text-xl font-bold">27</span>
+                    </button>
+                    <button data-role="quick-date" data-date="2023-10-28" data-weekday="週六"
+                        class="date-pill flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] text-[#617589] hover:border-primary hover:text-primary shrink-0 transition-colors">
+                        <span class="text-xs font-medium">週六</span>
+                        <span class="text-xl font-bold">28</span>
+                    </button>
+                    <button data-role="quick-date" data-date="2023-10-29" data-weekday="週日" data-disabled="true"
+                        class="date-pill flex flex-col items-center justify-center min-w-[72px] h-[72px] rounded-xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] text-[#617589] hover:border-primary hover:text-primary shrink-0 transition-colors opacity-50 cursor-not-allowed">
+                        <span class="text-xs font-medium">週日</span>
+                        <span class="text-xl font-bold">29</span>
+                    </button>
+                </div>
+
+                <p id="selected-date-display" class="text-xs text-[#617589]">已選日期：2023-10-23 (週一)</p>
+
+                <!-- 門診區段標題 -->
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-400">wb_sunny</span>
+                    <h3 class="text-lg font-bold text-[#111418] dark:text-white">上午特別門診 (09:00 - 12:00)</h3>
+                </div>
+
+                <!-- 醫師卡片 - 左右兩欄設計 -->
+                <div data-doctor-name="王大明 醫師" data-doctor-title="視網膜專家門診"
+                    class="bg-white dark:bg-[#1c2632] rounded-xl border border-[#e5e7eb] dark:border-[#2a3441] shadow-sm overflow-hidden">
+                    <div class="flex flex-col lg:flex-row">
+                        <!-- 左側：醫師介紹 (較寬) -->
+                        <div
+                            class="lg:w-3/5 xl:w-2/3 p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-[#f0f2f4] dark:border-[#2a3441]">
+                            <div class="flex flex-col sm:flex-row gap-6">
+                                <!-- 大頭照 -->
+                                <div class="shrink-0">
+                                    <div id="doctor-photo"
+                                        class="size-32 lg:size-40 rounded-2xl bg-cover bg-center bg-gray-200 border-4 border-primary/20 shadow-lg mx-auto sm:mx-0"
+                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB8seP-4B0_0ico_5tpy7rDR4dHBFitxyQ9cwIKUzT3CRPEoWGWbzbu78I9SpoR6JrFCXXYBvO64hpZr_boO5oyyA6dzBbA1p3ZXV39Brso1kC90Ph1-kaa86j1gGoDNSldEXaadSoM1FuzovX4bjzpyKEvfcAiqBOR-XR8m82J_bvNKyfxQ0w0hExUrN3924yoSshHF_bflDCZcJZwWwlqXOX4OrhRg79AlmL04IPbDdKdFzwMQc7it2l_irH3ME8ozXZzv8q2qKzo');">
+                                    </div>
+                                </div>
+
+                                <!-- 醫師資訊 -->
+                                <div class="flex-1 text-center sm:text-left">
+                                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-2">
+                                        <h4 id="doctor-name"
+                                            class="text-2xl lg:text-3xl font-bold text-[#111418] dark:text-white">王大明 醫師
+                                        </h4>
+                                        <span id="doctor-specialty-badge"
+                                            class="px-3 py-1 bg-primary/10 text-primary text-sm font-bold rounded-full">視網膜專科</span>
+                                    </div>
+                                    <p id="doctor-title" class="text-primary font-bold text-lg mb-4">視網膜專家門診</p>
+
+                                    <!-- 專長標籤 -->
+                                    <div id="doctor-tags" class="flex flex-wrap justify-center sm:justify-start gap-2 mb-5">
+                                        <span
+                                            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-[#617589] text-sm rounded-lg">視網膜剝離</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-[#617589] text-sm rounded-lg">黃斑部病變</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-[#617589] text-sm rounded-lg">糖尿病視網膜病變</span>
+                                        <span
+                                            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-[#617589] text-sm rounded-lg">飛蚊症</span>
+                                    </div>
+
+                                    <!-- 簡介 -->
+                                    <p id="doctor-bio" class="text-[#617589] text-sm leading-relaxed mb-5">
+                                        王大明醫師為視網膜專科權威，擁有超過20年臨床經驗，專精於視網膜剝離手術、黃斑部病變治療及糖尿病視網膜病變的雷射與注射療法。曾任職於台大醫院眼科部，並於美國Johns
+                                        Hopkins醫學中心進修。發表超過50篇學術論文，多次獲邀至國際醫學會議演講。
+                                    </p>
+
+                                    <!-- 學經歷 -->
+                                    <div class="border-t border-[#f0f2f4] dark:border-[#2a3441] pt-4">
+                                        <h5 class="text-sm font-bold text-[#111418] dark:text-white mb-3">學經歷</h5>
+                                        <div id="doctor-experiences"
+                                            class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-[#617589]">
+                                            <div class="flex items-start gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">school</span>
+                                                <span>台大醫學院醫學系</span>
+                                            </div>
+                                            <div class="flex items-start gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">school</span>
+                                                <span>台大臨床醫學研究所博士</span>
+                                            </div>
+                                            <div class="flex items-start gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">work</span>
+                                                <span>前台大醫院眼科部主治醫師</span>
+                                            </div>
+                                            <div class="flex items-start gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">public</span>
+                                                <span>美國Johns Hopkins進修</span>
+                                            </div>
+                                            <div class="flex items-start gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">verified</span>
+                                                <span>中華民國眼科醫學會專科醫師</span>
+                                            </div>
+                                            <div class="flex items-start gap-2">
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">menu_book</span>
+                                                <span>SCI論文發表超過50篇</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右側：預約時段 (較窄) -->
+                        <div class="lg:w-2/5 xl:w-1/3 p-6 lg:p-8 bg-gray-50 dark:bg-[#161e27] flex flex-col">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-primary">calendar_today</span>
+                                <h5 class="text-base font-bold text-[#111418] dark:text-white">選擇預約時段</h5>
+                            </div>
+                            <p class="text-xs text-[#9ca3af] mb-4">每個時段約15分鐘，請點選可用時段進行預約</p>
+                            <p class="text-xs text-[#9ca3af] mb-4">所有時段以台灣時區顯示</p>
+                            <p id="slot-date-label" class="text-xs text-[#617589] mb-4">目前日期：2023-10-23 (週一)</p>
+
+                            <!-- 時段按鈕 -->
+                            <div id="slot-grid" class="grid grid-cols-3 gap-2 flex-1">
+                                <button class="slot-btn slot-btn-available">09:00</button>
+                                <button class="slot-btn slot-btn-available">09:15</button>
+                                <button class="slot-btn slot-btn-available">09:30</button>
+                                <button class="slot-btn slot-btn-booked" disabled="" title="已預約">09:45</button>
+                                <button class="slot-btn slot-btn-available">10:00</button>
+                                <button class="slot-btn slot-btn-available">10:15</button>
+                                <button class="slot-btn slot-btn-available">10:30</button>
+                                <button class="slot-btn slot-btn-available">10:45</button>
+                                <button class="slot-btn slot-btn-booked" disabled="" title="已預約">11:00</button>
+                                <button class="slot-btn slot-btn-available">11:15</button>
+                                <button class="slot-btn slot-btn-available">11:30</button>
+                                <button class="slot-btn slot-btn-available">11:45</button>
+                            </div>
+                            <div id="slots-empty"
+                                class="hidden mt-4 text-sm text-[#9ca3af] border border-dashed border-[#dbe0e6] rounded-lg p-3 text-center">
+                                尚無可預約時段
+                            </div>
+
+                            <!-- 圖例 -->
+                            <div
+                                class="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-[#e5e7eb] dark:border-[#374151]">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 rounded bg-[#dcfce7] border-2 border-primary/50"></div>
+                                    <span class="text-xs text-[#617589]">可預約</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 rounded bg-[#e5e7eb] border-2 border-[#e5e7eb]"></div>
+                                    <span class="text-xs text-[#617589]">已額滿</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- 會員登入 / 綁定 -->
+        <section
+            class="bg-white dark:bg-[#1c2632] rounded-2xl border border-[#e5e7eb] dark:border-[#2a3441] shadow-sm p-6 lg:p-8">
+            <div class="flex items-center gap-2 text-primary-dark mb-4">
+                <span class="material-symbols-outlined text-primary">account_circle</span>
+                <h3 class="text-lg font-bold text-[#111418] dark:text-white">會員登入 / 綁定</h3>
+            </div>
+            <p class="text-xs text-[#9ca3af] mb-4">支援 Google / LINE / Apple 登入（開發階段以 id_token 測試）。</p>
+            <form id="auth-login-form" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">登入方式</span>
+                    <select id="auth-provider"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm">
+                        <option value="google">Google</option>
+                        <option value="line">LINE</option>
+                        <option value="apple">Apple</option>
+                    </select>
+                </label>
+                <label class="flex flex-col gap-2 sm:col-span-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">id_token（開發用）</span>
+                    <input id="auth-id-token" type="text" placeholder="貼上 id_token"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm" />
+                </label>
+                <button type="submit"
+                    class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-md shadow-primary/20">
+                    登入/檢查綁定
+                </button>
+            </form>
+            <div id="auth-login-message" class="text-xs text-[#617589] mt-3"></div>
+
+            <form id="auth-bind-form" class="hidden mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                <input type="hidden" id="auth-provider-sub" />
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">姓名</span>
+                    <input id="auth-display-name" type="text" placeholder="王小明"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm" />
+                </label>
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">身分證字號 <span
+                            class="text-red-500">*</span></span>
+                    <input id="auth-national-id" type="text" placeholder="A123456789"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm uppercase" />
+                </label>
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">生日 <span
+                            class="text-red-500">*</span></span>
+                    <input id="auth-dob" type="date"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm" />
+                </label>
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">手機</span>
+                    <input id="auth-phone" type="text" placeholder="09xx-xxx-xxx"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm" />
+                </label>
+                <label class="flex flex-col gap-2 sm:col-span-2">
+                    <span class="text-sm font-semibold text-[#111418] dark:text-white">Email</span>
+                    <input id="auth-email" type="email" placeholder="name@example.com"
+                        class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm" />
+                </label>
+                <button type="submit"
+                    class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-md shadow-primary/20 sm:col-span-2">
+                    送出綁定資料
+                </button>
+            </form>
+            <div id="auth-bind-message" class="text-xs text-[#617589] mt-3"></div>
+        </section>
+
+        <!-- 會員功能 -->
+        <section id="member-section"
+            class="bg-white dark:bg-[#1c2632] rounded-2xl border border-[#e5e7eb] dark:border-[#2a3441] shadow-sm p-6 lg:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2 text-primary-dark">
+                    <span class="material-symbols-outlined text-primary">assignment</span>
+                    <h3 class="text-lg font-bold text-[#111418] dark:text-white">會員功能</h3>
+                </div>
+                <button id="member-refresh"
+                    class="h-10 px-4 rounded-lg border border-[#dbe0e6] text-sm text-[#617589] hover:border-primary hover:text-primary">
+                    重新整理
+                </button>
+            </div>
+            <div id="member-status" class="text-xs text-[#617589] mb-3">尚未登入</div>
+            <div id="member-appointments" class="space-y-3 text-sm text-[#617589]">
+                <p>尚無資料</p>
+            </div>
+            <div id="member-message" class="text-xs text-[#9ca3af] mt-3"></div>
+            <div class="border-t border-dashed border-[#e5e7eb] dark:border-[#2a3441] my-6"></div>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2 text-primary-dark">
+                    <span class="material-symbols-outlined text-primary">assignment_add</span>
+                    <h4 class="text-base font-bold text-[#111418] dark:text-white">病人回報表單</h4>
+                </div>
+                <button id="member-forms-refresh"
+                    class="h-9 px-4 rounded-lg border border-[#dbe0e6] text-sm text-[#617589] hover:border-primary hover:text-primary">
+                    重新整理
+                </button>
+            </div>
+            <div id="member-forms-status" class="text-xs text-[#617589] mb-3">請先登入會員</div>
+            <div id="member-forms-list" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <p class="text-[#9ca3af] text-sm">尚未載入</p>
+            </div>
+            <div id="member-forms-message" class="text-xs text-[#9ca3af] mt-3"></div>
+        </section>
+
+        <!-- 查詢 / 取消預約 -->
+        <section
+            class="bg-white dark:bg-[#1c2632] rounded-2xl border border-[#e5e7eb] dark:border-[#2a3441] shadow-sm p-6 lg:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
+                <div class="flex items-center gap-2 text-primary-dark">
+                    <span class="material-symbols-outlined text-primary">manage_search</span>
+                    <h3 class="text-lg font-bold text-[#111418] dark:text-white">查詢 / 取消預約</h3>
+                </div>
+                <p class="text-xs text-[#9ca3af]">需要 8 碼查詢碼 + 生日 + 手機或 Email</p>
+            </div>
+            <form id="lookup-form" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="flex flex-col gap-2">
+                        <span class="text-sm font-semibold text-[#111418] dark:text-white">查詢碼 <span
+                                class="text-red-500">*</span></span>
+                        <input id="lookup-booking-ref" name="booking_ref" autocomplete="off"
+                            class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm tracking-[0.25em] uppercase focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                            placeholder="例如：8H2K9XWQ" />
+                        <span id="lookup-ref-error" class="text-xs text-red-600 hidden">查詢碼格式不正確</span>
+                    </label>
+                    <label class="flex flex-col gap-2">
+                        <span class="text-sm font-semibold text-[#111418] dark:text-white">生日 <span
+                                class="text-red-500">*</span></span>
+                        <input id="lookup-dob" name="dob" type="date"
+                            class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="flex flex-col gap-2">
+                        <span class="text-sm font-semibold text-[#111418] dark:text-white">手機號碼</span>
+                        <input id="lookup-phone" name="phone" inputmode="tel" autocomplete="off"
+                            class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                            placeholder="09xx-xxx-xxx" />
+                    </label>
+                    <label class="flex flex-col gap-2">
+                        <span class="text-sm font-semibold text-[#111418] dark:text-white">Email</span>
+                        <input id="lookup-email" name="email" type="email" autocomplete="off"
+                            class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                            placeholder="name@example.com" />
+                    </label>
+                </div>
+                <div class="text-xs text-[#9ca3af]">查詢碼不含 I/O/0/1，固定 8 碼英數。</div>
+                <div id="lookup-error" class="text-xs text-red-600 hidden">請確認必填欄位與聯絡方式</div>
+                <div id="lookup-success" class="text-xs text-green-700 hidden">已送出 <span
+                        id="lookup-action-label">查詢</span>（示意，尚未連線後端）</div>
+                <div class="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
+                    <button type="submit" name="action" value="lookup"
+                        class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-md shadow-primary/20">
+                        查詢預約
+                    </button>
+                    <button type="submit" name="action" value="cancel"
+                        class="h-11 px-6 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] text-sm font-semibold text-[#617589] hover:border-primary hover:text-primary">
+                        取消預約
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 版面切換連結 -->
+        <div class="text-center py-4">
+            <a href="#" class="text-[#9ca3af] text-sm font-medium cursor-not-allowed"
+                aria-disabled="true">版面設計A（尚未實作）</a>
+        </div>
+        </main>
+    </div>
+    </div>
+
+    <!-- 預約表單（點選時段後開啟） -->
+    <div id="booking-modal" class="fixed inset-0 z-[60] hidden" aria-hidden="true">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" data-role="backdrop"></div>
+        <div
+            class="relative mx-auto my-6 w-[calc(100%-2rem)] max-w-2xl rounded-2xl bg-white dark:bg-[#1c2632] border border-[#e5e7eb] dark:border-[#2a3441] shadow-2xl overflow-hidden">
+            <div
+                class="flex items-center justify-between px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2a3441]">
+                <div>
+                    <h3 class="text-lg font-bold text-[#111418] dark:text-white">預約資料填寫</h3>
+                    <p class="text-xs text-[#9ca3af] mt-1">請填寫必要資訊以完成掛號</p>
+                </div>
+                <button id="booking-close"
+                    class="size-9 rounded-full hover:bg-[#f0f2f4] dark:hover:bg-[#2a3441] text-[#617589] flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <div class="px-6 py-5 space-y-5">
+                <div
+                    class="bg-[#f8fdf9] dark:bg-[#161e27] rounded-xl border border-[#e5e7eb] dark:border-[#2a3441] p-4 flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <p class="text-xs text-[#9ca3af]">預約資訊</p>
+                        <div class="mt-2 space-y-1 text-sm text-[#111418] dark:text-white">
+                            <div><span class="text-[#617589]">院所：</span><span id="booking-clinic">台北敦南院區</span></div>
+                            <div><span class="text-[#617589]">醫師：</span><span id="booking-doctor">王大明 醫師</span></div>
+                            <div><span class="text-[#617589]">門診：</span><span id="booking-title">視網膜專家門診</span></div>
+                        </div>
+                    </div>
+                    <div class="sm:w-40">
+                        <p class="text-xs text-[#9ca3af]">日期 / 時段</p>
+                        <div class="mt-2 text-sm font-semibold text-primary-dark" id="booking-datetime">--</div>
+                        <p class="text-[11px] text-[#9ca3af] mt-1">台灣時區</p>
+                    </div>
+                </div>
+
+                <form id="booking-form" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <label class="flex flex-col gap-2">
+                            <span class="text-sm font-semibold text-[#111418] dark:text-white">姓名 <span
+                                    class="text-red-500">*</span></span>
+                            <input id="patient-name" name="display_name" autocomplete="off"
+                                class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                                placeholder="王小明" />
+                        </label>
+                        <label class="flex flex-col gap-2">
+                            <span class="text-sm font-semibold text-[#111418] dark:text-white">身分證字號 <span
+                                    class="text-red-500">*</span></span>
+                            <input id="patient-id" name="national_id" autocomplete="off"
+                                class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                                placeholder="例如：A123456789" />
+                            <span id="id-error" class="text-xs text-red-600 hidden">身分證字號格式或檢查碼不正確</span>
+                        </label>
+                        <label class="flex flex-col gap-2">
+                            <span class="text-sm font-semibold text-[#111418] dark:text-white">生日 <span
+                                    class="text-red-500">*</span></span>
+                            <input id="patient-dob" name="dob" type="date"
+                                class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex flex-col gap-2">
+                            <span class="text-sm font-semibold text-[#111418] dark:text-white">手機號碼</span>
+                            <input id="patient-phone" name="phone" inputmode="tel" autocomplete="off"
+                                class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                                placeholder="09xx-xxx-xxx" />
+                        </label>
+                        <label class="flex flex-col gap-2">
+                            <span class="text-sm font-semibold text-[#111418] dark:text-white">Email</span>
+                            <input id="patient-email" name="email" type="email" autocomplete="off"
+                                class="h-11 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] bg-white dark:bg-[#1c2632] px-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                                placeholder="name@example.com" />
+                        </label>
+                    </div>
+
+                    <div class="text-xs text-[#9ca3af]">
+                        必填欄位：姓名、身分證與生日；聯絡方式需填手機或 Email 其一。預約成功將提供 8 碼查詢碼。
+                    </div>
+
+                    <div id="turnstile-wrapper"
+                        class="hidden rounded-xl border border-dashed border-[#c7e6cf] bg-[#f4fff6] p-4 text-sm text-[#3d8b44] space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                            <span>表單送出前需通過 Turnstile 驗證</span>
+                        </div>
+                        <div id="turnstile-container" class="flex justify-center"></div>
+                        <p id="turnstile-error" class="text-xs text-red-600 hidden">請完成驗證</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-[#617589]">
+                        <span>若無法完成驗證，可改用 Email 驗證碼。</span>
+                        <button type="button" id="email-verify-toggle" aria-expanded="false"
+                            class="text-primary font-semibold hover:underline self-start sm:self-auto">
+                            改用 Email 驗證碼
+                        </button>
+                    </div>
+
+                    <div id="email-verify-section"
+                        class="hidden rounded-xl border border-dashed border-[#c7d9f0] bg-[#f3f7ff] p-4 text-xs text-[#617589] space-y-2">
+                        <div class="flex items-center gap-2 text-[#1f6fb2]">
+                            <span class="material-symbols-outlined text-[18px]">mail</span>
+                            <span>使用 Email 驗證碼</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button type="button" id="email-verify-send"
+                                class="h-9 px-3 rounded-lg border border-[#dbe0e6] text-xs text-[#617589] hover:border-primary hover:text-primary">
+                                寄送驗證碼
+                            </button>
+                            <input id="email-verify-code" type="text" maxlength="6" autocomplete="off"
+                                class="h-9 rounded-lg border border-[#dbe0e6] bg-white px-3 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                                placeholder="6 位數驗證碼" />
+                        </div>
+                        <div id="email-verify-status" class="text-[11px] text-[#9ca3af]"></div>
+                        <div id="email-verify-debug" class="text-[11px] text-[#3d8b44] hidden"></div>
+                    </div>
+
+                    <label class="flex items-start gap-2 text-sm text-[#617589]">
+                        <input id="terms-check" type="checkbox"
+                            class="mt-1 size-4 rounded border-[#dbe0e6] text-primary focus:ring-primary" />
+                        我已閱讀並同意服務條款與隱私權政策
+                    </label>
+
+                    <div id="form-error" class="text-xs text-red-600 hidden">請確認必填欄位與條款同意狀態</div>
+                    <div id="form-success" class="text-xs text-green-700 hidden">
+                        已送出預約（示意，尚未連線後端）。查詢碼：
+                        <span id="booking-ref-output" class="font-semibold text-primary-dark">--------</span>
+                        <button type="button" id="booking-ref-copy"
+                            class="ml-2 px-2 py-1 rounded border border-[#dbe0e6] text-[11px] text-[#617589] hover:border-primary hover:text-primary">
+                            複製
+                        </button>
+                        <span id="booking-ref-copied" class="ml-2 text-[11px] text-[#3d8b44] hidden">已複製</span>
+                        <div id="booking-actions" class="mt-3 flex flex-col sm:flex-row gap-2">
+                            <a id="booking-ics-link" href="#" download
+                                class="h-9 px-3 inline-flex items-center justify-center rounded-lg border border-[#dbe0e6] text-[11px] text-[#617589] hover:border-primary hover:text-primary">
+                                Add to calendar (.ics)
+                            </a>
+                            <button type="button" id="booking-checkin-button"
+                                class="h-9 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-[11px] font-semibold">
+                                Show check-in QR
+                            </button>
+                        </div>
+                        <div id="booking-checkin-panel"
+                            class="mt-3 hidden rounded-lg border border-[#e5e7eb] bg-white p-3 text-xs text-[#617589] space-y-2">
+                            <div id="booking-checkin-qr" class="w-32 h-32"></div>
+                            <div id="booking-checkin-url" class="break-all"></div>
+                            <div id="booking-checkin-expiry" class="text-[#9ca3af]"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
+                        <button type="button" id="booking-cancel"
+                            class="h-11 px-5 rounded-lg border border-[#dbe0e6] dark:border-[#4b5563] text-sm font-semibold text-[#617589] hover:border-primary hover:text-primary">
+                            取消
+                        </button>
+                        <button type="submit"
+                            class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-md shadow-primary/20">
+                            確認預約
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto bg-white dark:bg-[#1c2632] border-t border-[#f0f2f4] dark:border-[#2a3441] py-8">
+        <div class="max-w-[1440px] mx-auto px-6 lg:px-10 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-[#617589] text-sm">© 2023 Nobel Eye Clinic. All rights reserved.</p>
+            <div class="flex gap-6">
+                <a class="text-[#617589] hover:text-primary text-sm" href="#">隱私權政策</a>
+                <a class="text-[#617589] hover:text-primary text-sm" href="#">服務條款</a>
+                <a class="text-[#617589] hover:text-primary text-sm" href="#">聯絡我們</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script type="module" src="./app.js"></script>
+
+</body>
+
+</html>

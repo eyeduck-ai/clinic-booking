@@ -1,0 +1,33 @@
+name = "clinic-booking-api"
+main = "src/index.ts"
+compatibility_date = "2026-02-02"
+crons = ["0 10 * * *"]
+
+[vars]
+APP_ENV = "dev"
+EMAIL_PROVIDER = "resend"
+# TURNSTILE_SECRET = ""
+# RESEND_API_KEY = ""
+# RESEND_FROM = "noreply@example.com"
+# SENDGRID_API_KEY = ""
+# SENDGRID_FROM = "noreply@example.com"
+# POSTMARK_API_KEY = ""
+# POSTMARK_FROM = "noreply@example.com"
+# LINE_CHANNEL_ACCESS_TOKEN = ""
+# GOOGLE_CLIENT_ID = ""
+# APPLE_CLIENT_ID = ""
+# LINE_LOGIN_CHANNEL_ID = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "clinic-booking"
+database_id = "REPLACE_WITH_D1_ID"
+
+[durable_objects]
+bindings = [
+  { name = "BOOKING_DO", class_name = "BookingDurableObject" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BookingDurableObject"]

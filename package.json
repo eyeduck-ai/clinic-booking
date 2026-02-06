@@ -1,0 +1,14 @@
+{
+  "name": "clinic-booking",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.2",
+    "miniflare": "^3.20240206.0",
+    "vitest": "^1.6.0"
+  }
+}

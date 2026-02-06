@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinic Admin Console</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="../shared/ui-theme.js"></script>
+  <link href="../shared/ui-components.css" rel="stylesheet" />
+  <link href="./ui-base.css" rel="stylesheet" />
+</head>
+<body class="ui-page bg-background-light text-ink">
+<main class="max-w-6xl mx-auto p-6 space-y-6 ui-form">
+  <section class="ui-card">
+    <h2 class="ui-section-title">Admin Context</h2>
+    <div class="ui-grid">
+      <label>Clinic<select id="clinic-select"></select></label>
+      <label>Provider<select id="provider-select"></select></label>
+      <label>Queue Date<input id="queue-date" type="date" /></label>
+    </div>
+    <div id="admin-role-badge" class="note"></div>
+  </section>
+  <section id="section-admin" class="ui-card">
+    <h2 class="ui-section-title">Admin Section</h2>
+    <div class="ui-grid">
+    </div>
+  </section>
+  <section id="section-audit" class="ui-card">
+    <h2 class="ui-section-title">Audit Section</h2>
+    <div class="ui-grid">
+      <label>Audit Actor<select id="audit-actor"></select></label>
+      <label>Audit Clinic<input id="audit-clinic" type="text" /></label>
+      <label>Audit Date From<input id="audit-date-from" type="date" /></label>
+      <label>Audit Date To<input id="audit-date-to" type="date" /></label>
+      <label>Audit Entity<input id="audit-entity" type="text" /></label>
+      <div id="audit-list" class="note"></div>
+      <div id="audit-message" class="note"></div>
+      <button id="audit-refresh" type="button">Audit Refresh</button>
+    </div>
+  </section>
+  <section id="section-booking" class="ui-card">
+    <h2 class="ui-section-title">Booking Section</h2>
+    <div class="ui-grid">
+      <button id="booking-create" type="button">Booking Create</button>
+      <label>Booking Date<input id="booking-date" type="date" /></label>
+      <label>Booking Dob<input id="booking-dob" type="date" /></label>
+      <label>Booking Email<input id="booking-email" type="email" /></label>
+      <form id="booking-form-admin"><button type="submit">Submit Booking Form Admin</button></form>
+      <button id="booking-lookup" type="button">Booking Lookup</button>
+      <div id="booking-message" class="note"></div>
+      <label>Booking Name<input id="booking-name" type="text" /></label>
+      <label>Booking National Id<input id="booking-national-id" type="text" /></label>
+      <label>Booking Notify<input id="booking-notify" type="checkbox" /></label>
+      <label>Booking Patient Id<input id="booking-patient-id" type="text" /></label>
+      <div id="booking-patient-summary" class="note"></div>
+      <label>Booking Phone<input id="booking-phone" type="tel" /></label>
+      <label>Booking Reason<input id="booking-reason" type="text" /></label>
+      <label>Booking Slot<input id="booking-slot" type="text" /></label>
+    </div>
+  </section>
+  <section id="section-close" class="ui-card">
+    <h2 class="ui-section-title">Close Section</h2>
+    <div class="ui-grid">
+      <label>Close Date<input id="close-date" type="date" /></label>
+      <form id="close-form"><button type="submit">Submit Close Form</button></form>
+      <div id="close-message" class="note"></div>
+      <label>Close Mode<select id="close-mode"></select></label>
+      <label>Close Notify<input id="close-notify" type="checkbox" /></label>
+      <label>Close Reason<input id="close-reason" type="text" /></label>
+    </div>
+  </section>
+  <section id="section-csv" class="ui-card">
+    <h2 class="ui-section-title">Csv Section</h2>
+    <div class="ui-grid">
+      <label>Csv Clinic<select id="csv-clinic"></select></label>
+      <label>Csv Date<input id="csv-date" type="date" /></label>
+      <button id="csv-export" type="button">Csv Export</button>
+      <label>Csv File<input id="csv-file" type="text" /></label>
+      <label>Csv Import<input id="csv-import" type="text" /></label>
+      <div id="csv-message" class="note"></div>
+      <label>Csv Provider<select id="csv-provider"></select></label>
+    </div>
+  </section>
+  <section id="section-exception" class="ui-card">
+    <h2 class="ui-section-title">Exception Section</h2>
+    <div class="ui-grid">
+      <button id="exception-cancel-edit" type="button">Exception Cancel Edit</button>
+      <label>Exception Capacity<input id="exception-capacity" type="text" /></label>
+      <label>Exception Date<input id="exception-date" type="date" /></label>
+      <label>Exception End<input id="exception-end" type="text" /></label>
+      <form id="exception-form"><button type="submit">Submit Exception Form</button></form>
+      <label>Exception Id<input id="exception-id" type="text" /></label>
+      <div id="exception-list" class="note"></div>
+      <div id="exception-message" class="note"></div>
+      <label>Exception Note<input id="exception-note" type="text" /></label>
+      <label>Exception Override Fields<input id="exception-override-fields" type="text" /></label>
+      <label>Exception Slot<input id="exception-slot" type="text" /></label>
+      <label>Exception Start<input id="exception-start" type="text" /></label>
+      <button id="exception-submit" type="button">Exception Submit</button>
+      <label>Exception Type<select id="exception-type"></select></label>
+    </div>
+  </section>
+  <section id="section-form" class="ui-card">
+    <h2 class="ui-section-title">Form Section</h2>
+    <div class="ui-grid">
+      <label>Form Definition Active<input id="form-definition-active" type="checkbox" /></label>
+      <button id="form-definition-clear" type="button">Form Definition Clear</button>
+      <form id="form-definition-form"><button type="submit">Submit Form Definition Form</button></form>
+      <div id="form-definition-list" class="note"></div>
+      <div id="form-definition-message" class="note"></div>
+      <button id="form-definition-refresh" type="button">Form Definition Refresh</button>
+      <label>Form Definition Schema<textarea id="form-definition-schema" rows="3"></textarea></label>
+      <button id="form-definition-submit" type="button">Form Definition Submit</button>
+      <label>Form Definition Type<select id="form-definition-type"></select></label>
+      <label>Form Definition Types<select id="form-definition-types"></select></label>
+    </div>
+  </section>
+  <section id="section-generate" class="ui-card">
+    <h2 class="ui-section-title">Generate Section</h2>
+    <div class="ui-grid">
+      <form id="generate-form"><button type="submit">Submit Generate Form</button></form>
+      <label>Generate From<input id="generate-from" type="date" /></label>
+      <div id="generate-message" class="note"></div>
+      <label>Generate Overwrite<input id="generate-overwrite" type="checkbox" /></label>
+      <label>Generate Reset<input id="generate-reset" type="text" /></label>
+      <label>Generate To<input id="generate-to" type="date" /></label>
+    </div>
+  </section>
+  <section id="section-notice" class="ui-card">
+    <h2 class="ui-section-title">Notice Section</h2>
+    <div class="ui-grid">
+      <label>Notice Clinic<select id="notice-clinic"></select></label>
+      <label>Notice Content<textarea id="notice-content" rows="3"></textarea></label>
+      <form id="notice-form"><button type="submit">Submit Notice Form</button></form>
+      <div id="notice-message" class="note"></div>
+    </div>
+  </section>
+  <section id="section-notification" class="ui-card">
+    <h2 class="ui-section-title">Notification Section</h2>
+    <div class="ui-grid">
+      <div id="notification-list" class="note"></div>
+      <div id="notification-message" class="note"></div>
+      <button id="notification-process" type="button">Notification Process</button>
+      <button id="notification-refresh" type="button">Notification Refresh</button>
+      <label>Notification Status<select id="notification-status"></select></label>
+    </div>
+  </section>
+  <section id="section-patient" class="ui-card">
+    <h2 class="ui-section-title">Patient Section</h2>
+    <div class="ui-grid">
+      <label>Patient Appt Filter<input id="patient-appt-filter" type="text" /></label>
+      <label>Patient Appt From<input id="patient-appt-from" type="date" /></label>
+      <div id="patient-appt-list" class="note"></div>
+      <div id="patient-appt-message" class="note"></div>
+      <button id="patient-appt-more" type="button">Patient Appt More</button>
+      <button id="patient-appt-refresh" type="button">Patient Appt Refresh</button>
+      <label>Patient Appt Status<select id="patient-appt-status"></select></label>
+      <label>Patient Appt To<input id="patient-appt-to" type="date" /></label>
+      <div id="patient-auth-list" class="note"></div>
+      <div id="patient-auth-message" class="note"></div>
+      <button id="patient-auth-refresh" type="button">Patient Auth Refresh</button>
+      <button id="patient-clear" type="button">Patient Clear</button>
+      <label>Patient Clinic<select id="patient-clinic"></select></label>
+      <button id="patient-create" type="button">Patient Create</button>
+      <button id="patient-create-dob" type="button">Patient Create Dob</button>
+      <button id="patient-create-email" type="button">Patient Create Email</button>
+      <button id="patient-create-name" type="button">Patient Create Name</button>
+      <button id="patient-create-national-id" type="button">Patient Create National Id</button>
+      <button id="patient-create-phone" type="button">Patient Create Phone</button>
+      <button id="patient-delete" type="button">Patient Delete</button>
+      <label>Patient Dob<input id="patient-dob" type="date" /></label>
+      <button id="patient-edit" type="button">Patient Edit</button>
+      <label>Patient Email<input id="patient-email" type="email" /></label>
+      <div id="patient-form-list" class="note"></div>
+      <div id="patient-form-message" class="note"></div>
+      <button id="patient-form-refresh" type="button">Patient Form Refresh</button>
+      <label>Patient Gender<input id="patient-gender" type="text" /></label>
+      <label>Patient Id<input id="patient-id" type="text" /></label>
+      <div id="patient-list" class="note"></div>
+      <div id="patient-message" class="note"></div>
+      <label>Patient Name<input id="patient-name" type="text" /></label>
+      <label>Patient National Id<input id="patient-national-id" type="text" /></label>
+      <label>Patient Phone<input id="patient-phone" type="tel" /></label>
+      <label>Patient Query<input id="patient-query" type="text" /></label>
+      <button id="patient-refresh" type="button">Patient Refresh</button>
+      <label>Patient Search<input id="patient-search" type="text" /></label>
+      <button id="patient-unlock" type="button">Patient Unlock</button>
+    </div>
+  </section>
+  <section id="section-report" class="ui-card">
+    <h2 class="ui-section-title">Report Section</h2>
+    <div class="ui-grid">
+      <label>Report Clinic<select id="report-clinic"></select></label>
+      <label>Report Date<input id="report-date" type="date" /></label>
+      <div id="report-message" class="note"></div>
+      <div id="report-output" class="note"></div>
+      <label>Report Provider<select id="report-provider"></select></label>
+      <button id="report-refresh" type="button">Report Refresh</button>
+      <label>Report Section<input id="report-section" type="text" /></label>
+    </div>
+  </section>
+  <section id="section-reschedule" class="ui-card">
+    <h2 class="ui-section-title">Reschedule Section</h2>
+    <div class="ui-grid">
+      <label>Reschedule Appointment Id<input id="reschedule-appointment-id" type="text" /></label>
+      <label>Reschedule Booking Ref<input id="reschedule-booking-ref" type="text" /></label>
+      <label>Reschedule Clinic Id<input id="reschedule-clinic-id" type="text" /></label>
+      <label>Reschedule Date<input id="reschedule-date" type="date" /></label>
+      <form id="reschedule-form"><button type="submit">Submit Reschedule Form</button></form>
+      <button id="reschedule-lookup" type="button">Reschedule Lookup</button>
+      <div id="reschedule-message" class="note"></div>
+      <label>Reschedule Notify<input id="reschedule-notify" type="checkbox" /></label>
+      <label>Reschedule Provider Id<input id="reschedule-provider-id" type="text" /></label>
+      <label>Reschedule Reason<input id="reschedule-reason" type="text" /></label>
+      <label>Reschedule Slot<input id="reschedule-slot" type="text" /></label>
+      <div id="reschedule-summary" class="note"></div>
+    </div>
+  </section>
+  <section id="section-rule" class="ui-card">
+    <h2 class="ui-section-title">Rule Section</h2>
+    <div class="ui-grid">
+      <button id="rule-cancel-edit" type="button">Rule Cancel Edit</button>
+      <label>Rule Capacity<input id="rule-capacity" type="text" /></label>
+      <label>Rule End<input id="rule-end" type="text" /></label>
+      <form id="rule-form"><button type="submit">Submit Rule Form</button></form>
+      <label>Rule From<input id="rule-from" type="date" /></label>
+      <label>Rule Id<input id="rule-id" type="text" /></label>
+      <div id="rule-list" class="note"></div>
+      <div id="rule-message" class="note"></div>
+      <label>Rule Slot<input id="rule-slot" type="text" /></label>
+      <label>Rule Start<input id="rule-start" type="text" /></label>
+      <button id="rule-submit" type="button">Rule Submit</button>
+      <label>Rule To<input id="rule-to" type="date" /></label>
+      <label>Rule Weekday<select id="rule-weekday"></select></label>
+    </div>
+  </section>
+  <section id="section-seed" class="ui-card">
+    <h2 class="ui-section-title">Seed Section</h2>
+    <div class="ui-grid">
+      <button id="seed-data" type="button">Seed Data</button>
+    </div>
+  </section>
+  <section id="section-staff" class="ui-card">
+    <h2 class="ui-section-title">Staff Section</h2>
+    <div class="ui-grid">
+      <label>Staff Clinic<select id="staff-clinic"></select></label>
+      <label>Staff Email<input id="staff-email" type="email" /></label>
+      <form id="staff-form"><button type="submit">Submit Staff Form</button></form>
+      <div id="staff-list" class="note"></div>
+      <div id="staff-message" class="note"></div>
+      <label>Staff Name<input id="staff-name" type="text" /></label>
+      <button id="staff-refresh" type="button">Staff Refresh</button>
+      <label>Staff Roles<input id="staff-roles" type="text" /></label>
+    </div>
+  </section>
+  <section id="section-template" class="ui-card">
+    <h2 class="ui-section-title">Template Section</h2>
+    <div class="ui-grid">
+      <label>Template Body<textarea id="template-body" rows="3"></textarea></label>
+      <label>Template Channel<input id="template-channel" type="text" /></label>
+      <label>Template Clinic<select id="template-clinic"></select></label>
+      <form id="template-form"><button type="submit">Submit Template Form</button></form>
+      <div id="template-list" class="note"></div>
+      <label>Template Locale<input id="template-locale" type="text" /></label>
+      <div id="template-message" class="note"></div>
+      <label>Template Name<input id="template-name" type="text" /></label>
+      <label>Template Payload<textarea id="template-payload" rows="3"></textarea></label>
+      <label>Template Preview<input id="template-preview" type="text" /></label>
+      <div id="template-preview-output" class="note"></div>
+      <button id="template-refresh" type="button">Template Refresh</button>
+      <label>Template Subject<input id="template-subject" type="text" /></label>
+    </div>
+  </section>
+  <section id="section-queue" class="ui-card">
+    <h2 class="ui-section-title">Queue Control</h2>
+    <form id="queue-form" class="ui-grid">
+      <label>Reserved Queue Nos (Clinic-wide)<input id="queue-reserved" type="text" placeholder="4,5" /></label>
+      <label>Call Queue No<input id="queue-call-input" type="number" min="1" /></label>
+      <label>Notify Called<input id="queue-notify-called" type="checkbox" /></label>
+      <label>Auto Refresh<input id="queue-auto-refresh" type="checkbox" /></label>
+      <button id="queue-save-reserved" type="button">Save Reserved</button>
+      <button id="queue-next" type="button">Next</button>
+      <button id="queue-quick-call" type="button">Call Number</button>
+      <button id="queue-export" type="button">Export CSV</button>
+    </form>
+    <div id="queue-summary" class="note"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div>
+        <h3 class="ui-subtitle">Today List</h3>
+        <div id="queue-list"></div>
+      </div>
+      <div>
+        <h3 class="ui-subtitle">Patient Detail (click item to load)</h3>
+        <div id="queue-detail-meta" class="note"></div>
+        <div id="queue-detail-actions"></div>
+        <div id="queue-detail-basic"></div>
+        <div id="queue-detail-forms"></div>
+        <div id="queue-detail-message" class="note"></div>
+      </div>
+    </div>
+    <div id="queue-message" class="note"></div>
+  </section>
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
